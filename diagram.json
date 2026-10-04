@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "author": "Revant Raj Jaiswal",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-arduino-uno", "id": "arduino", "top": 0, "left": 0, "attrs": {} },
+    { "type": "wokwi-ir-receiver", "id": "ir1", "top": -120, "left": 300, "attrs": {} },
+    { "type": "wokwi-ir-receiver", "id": "ir2", "top": 40, "left": 300, "attrs": {} },
+    { "type": "wokwi-servo", "id": "servo", "top": 190, "left": 300, "attrs": { "horn": "single" } },
+    { "type": "wokwi-lcd1602", "id": "lcd", "top": -130, "left": 520, "attrs": { "pins": "i2c", "i2cAddress": "0x27" } }
+  ],
+  "connections": [
+    ["ir1:GND", "arduino:GND.1", "black", []],
+    ["ir1:VCC", "arduino:5V", "red", []],
+    ["ir1:DAT", "arduino:2", "green", []],
+    ["ir2:GND", "arduino:GND.2", "black", []],
+    ["ir2:VCC", "arduino:5V", "red", []],
+    ["ir2:DAT", "arduino:3", "blue", []],
+    ["servo:PWM", "arduino:9", "orange", []],
+    ["servo:V+", "arduino:5V", "red", []],
+    ["servo:GND", "arduino:GND.3", "black", []],
+    ["lcd:VCC", "arduino:5V", "red", []],
+    ["lcd:GND", "arduino:GND.4", "black", []],
+    ["lcd:SDA", "arduino:A4", "green", []],
+    ["lcd:SCL", "arduino:A5", "yellow", []]
+  ],
+  "dependencies": {}
+}
