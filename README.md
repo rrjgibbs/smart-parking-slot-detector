@@ -13,6 +13,10 @@ An Arduino-based two-slot parking entry/exit prototype. Two IR sensors detect ve
 5. **LCD status:** The display shows the parked count, free spaces, entry/exit state, full/empty status, and sensor timeout messages.
 6. **Timeout and reset:** If the second sensor does not confirm the movement within 15 seconds, the gate closes and the controller waits until both sensors clear.
 
+## Wokwi simulation files
+
+The repository root contains `sketch.ino`, `diagram.json`, and `libraries.txt` for the Wokwi simulation. The organized copies are also available under `firmware/` and `wokwi/`.
+
 ## Hardware and pin mapping
 
 | Component | Arduino connection | Purpose |
