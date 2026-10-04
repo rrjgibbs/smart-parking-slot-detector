@@ -1,61 +1,62 @@
 # Smart Parking Slot Detector
 
-A sensor-based embedded-systems project exploring how parking-slot occupancy can be detected and communicated to help distinguish available spaces from occupied ones.
+An Arduino-based two-slot parking entry/exit prototype. Two IR sensors detect vehicle movement, a servo operates the barrier, and a 16×2 I²C LCD displays the parking count and gate status.
 
-> **Project type:** Educational prototype  
-> **Focus:** Embedded systems · Sensor interfacing · Occupancy detection · Smart infrastructure
+> **Project status:** Educational prototype. The sketch has been supplied, but it has not been hardware-tested or independently compiled in this repository.
 
-## Objective
+## How it works
 
-Reduce the uncertainty involved in finding an available parking slot by detecting whether a defined space is occupied and presenting that status clearly.
+1. **Entry detection:** IR sensor 1 detects an approaching vehicle. If fewer than two slots are recorded as occupied, the servo opens the gate.
+2. **Entry confirmation:** IR sensor 2 confirms the vehicle has passed through the entry sequence. The sketch marks the first available slot as occupied.
+3. **Exit detection:** IR sensor 2 starts an exit sequence when at least one vehicle is recorded inside.
+4. **Exit confirmation:** IR sensor 1 confirms the vehicle has passed out. The sketch marks the first occupied slot as free.
+5. **LCD status:** The display shows the parked count, free spaces, entry/exit state, full/empty status, and sensor timeout messages.
+6. **Timeout and reset:** If the second sensor does not confirm the movement within eight seconds, the gate closes and the controller waits until both sensors clear.
 
-## Intended system behaviour
+## Hardware and pin mapping
 
-1. A sensor monitors a parking slot.
-2. A controller reads the sensor signal.
-3. The reading is interpreted as **occupied** or **available** using calibrated thresholds or logic appropriate to the selected sensor.
-4. The slot status is shown through an indicator or monitoring interface, depending on the implementation.
-5. The system is tested under different object positions and environmental conditions.
+| Component | Arduino connection | Purpose |
+|---|---|---|
+| IR sensor 1 | D2 | Entry-side detection |
+| IR sensor 2 | D3 | Exit-side detection |
+| Servo signal | D9 | Barrier gate |
+| I²C LCD (16×2) | SDA/SCL I²C pins | Parking and gate status |
+| I²C LCD address | `0x27` | Configured display address |
+| IR sensor outputs | Active LOW | Detection is read when the pin is LOW |
 
-## Hardware and implementation
+The sketch uses `Servo.h`, `Wire.h`, and `LiquidCrystal_I2C.h`. Install compatible libraries in the Arduino IDE before compiling. I²C pins depend on the specific Arduino board; on an Arduino Uno, SDA is A4 and SCL is A5.
 
-The exact sensor, controller, wiring, and communication method should be documented after confirming the components used in the physical build. Avoid assuming that a particular sensor or IoT platform is present.
+## Configuration in the supplied sketch
 
-| Subsystem | Role |
-|---|---|
-| Occupancy sensor | Detects the presence of a vehicle or object |
-| Microcontroller | Reads the sensor and determines slot state |
-| Status output | Communicates available/occupied state |
-| Optional connectivity | Can send status to a dashboard if implemented |
+- Parking capacity: 2 slots
+- Gate closed angle: 115°
+- Gate open angle: 160°
+- Sensor confirmation period: 100 ms
+- Second-sensor timeout: 8 seconds
+- Gate close delay: 4 seconds
 
-## Validation plan
+These are the values currently defined in the sketch. Adjust servo angles to suit the mechanical gate and ensure the servo is not forced against its end stops.
 
-Record actual results before claiming performance:
+## Serial / baud rate
 
-- Test the slot in empty and occupied conditions.
-- Repeat tests with different vehicle/object positions.
-- Check for false occupied and false available readings.
-- Measure response time and reliability across repeated trials.
-- Document any sensor blind spots and environmental limitations.
+The supplied parking sketch does **not** call `Serial.begin()` and does not communicate with a Processing dashboard. Therefore, no serial baud rate is currently required. If serial diagnostics or a computer dashboard are added later, configure the same baud rate on both Arduino and host software.
 
-## Safety and limitations
+## Important implementation limitations
 
-This is an educational prototype, not a certified parking-management or vehicle-safety system. Sensor selection and mounting geometry strongly affect reliability. Do not claim real-world accuracy, cloud connectivity, or a deployed dashboard unless those features have been implemented and tested.
+- Slot occupancy is tracked in software and resets when the Arduino restarts. It is not independently measured at each parking bay.
+- The code assumes vehicles pass the two sensors in the expected sequence. Incorrect placement or overlapping sensor detections can produce incorrect counts.
+- The exit logic frees the first occupied slot, not necessarily the physical bay the vehicle leaves.
+- The servo gate and IR-sensor sequence should be tested with a safe, lightweight model before any physical barrier is used.
+- This is a prototype, not a certified parking access-control system.
 
-## Evidence to add
+## Validation checklist
 
-- Photograph of the assembled prototype
-- Wiring diagram and component list
-- Firmware source code
-- Interface screenshot, if applicable
-- Test table showing trials, correct detections, false detections, and response time
-
-## Future improvements
-
-- Improve sensor placement and calibration.
-- Add fault handling for disconnected or inconsistent sensors.
-- Build a multi-slot status display if required.
-- Add wireless reporting and a dashboard only after the core occupancy detection is reliable.
+- [ ] Compile with the selected Arduino board and installed libraries.
+- [ ] Verify both IR sensors read active LOW when triggered.
+- [ ] Confirm the LCD address and I²C wiring.
+- [ ] Verify gate-open and gate-closed angles without binding.
+- [ ] Test entry, exit, full-capacity, empty-lot, timeout, and sensor-clear recovery.
+- [ ] Repeat trials and record missed detections, false detections, and response time.
 
 ## Author
 
