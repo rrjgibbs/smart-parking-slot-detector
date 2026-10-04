@@ -11,7 +11,7 @@ An Arduino-based two-slot parking entry/exit prototype. Two IR sensors detect ve
 3. **Exit detection:** IR sensor 2 starts an exit sequence when at least one vehicle is recorded inside.
 4. **Exit confirmation:** IR sensor 1 confirms the vehicle has passed out. The sketch marks the first occupied slot as free.
 5. **LCD status:** The display shows the parked count, free spaces, entry/exit state, full/empty status, and sensor timeout messages.
-6. **Timeout and reset:** If the second sensor does not confirm the movement within eight seconds, the gate closes and the controller waits until both sensors clear.
+6. **Timeout and reset:** If the second sensor does not confirm the movement within 15 seconds, the gate closes and the controller waits until both sensors clear.
 
 ## Hardware and pin mapping
 
@@ -32,7 +32,7 @@ The sketch uses `Servo.h`, `Wire.h`, and `LiquidCrystal_I2C.h`. Install compatib
 - Gate closed angle: 115°
 - Gate open angle: 160°
 - Sensor confirmation period: 100 ms
-- Second-sensor timeout: 8 seconds
+- Second-sensor timeout: 15 seconds
 - Gate close delay: 4 seconds
 
 These are the values currently defined in the sketch. Adjust servo angles to suit the mechanical gate and ensure the servo is not forced against its end stops.
